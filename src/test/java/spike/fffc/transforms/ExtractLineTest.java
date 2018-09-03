@@ -1,6 +1,4 @@
-package spike.fffc;
-
-import java.io.File;
+package spike.fffc.transforms;
 
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.transforms.DoFnTester;
@@ -8,6 +6,8 @@ import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
+
+import spike.fffc.transforms.TransformLineFn;
 
 
 @RunWith(JUnitPlatform.class)
@@ -20,7 +20,7 @@ class ExtractLineTest {
 	@Test
 	void testExtractLineFromSource() {
 		
-		DoFnTester<File, String> extractlineFn = DoFnTester.of(new ExtractLineFn());
+		DoFnTester<String, String> extractlineFn = DoFnTester.of(new TransformLineFn());
 		
 		
 		pipeline.run();

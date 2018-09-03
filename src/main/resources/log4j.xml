@@ -28,9 +28,12 @@
     </layout>
   </appender>
 
+  <logger name="spikes.fffc">
+    <level value="debug"/>
+  </logger>
 
   <logger name="org.apache.beam">
-    <level value="debug"/>
+    <level value="info"/>
   </logger>
 
   <root>
