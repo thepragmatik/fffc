@@ -9,11 +9,10 @@ public class ExtractMetadataFn extends DoFn<String, ConfigKey> {
 	@ProcessElement
 	public void getConfigKey(@Element String configRow, ProcessContext ctx) {
 
-		System.out.println(configRow);
+//		System.out.println(configRow);
 
 		String[] fragments = configRow.split(",");
 
-		// validate that fragments are as we expect
 		validate(fragments);
 
 		// TODO: Remove hard coding!
@@ -24,6 +23,11 @@ public class ExtractMetadataFn extends DoFn<String, ConfigKey> {
 	}
 
 	private void validate(String[] fragments) throws IllegalArgumentException {
+
+		if (fragments.length == 0) {
+			throw new IllegalArgumentException(
+					"Metadata values cannot be null. Please check the metadata input is well defined (String, int, String)");
+		}
 
 		// should not be empty
 		for (String s : fragments) {
