@@ -3,7 +3,7 @@ package spike.fffc.transforms;
 import java.io.Serializable;
 import java.util.Set;
 
-public class ConfigKey implements Serializable {
+public class DataDescriptor implements Serializable {
 
 	private static final long serialVersionUID = -7801169854022337577L;
 
@@ -13,7 +13,7 @@ public class ConfigKey implements Serializable {
 
 	private String columnType;
 
-	public ConfigKey(String columnName, int length, String columnType) {
+	public DataDescriptor(String columnName, int length, String columnType) {
 		super();
 		this.columnName = columnName;
 		this.length = length;
@@ -35,6 +35,13 @@ public class ConfigKey implements Serializable {
 	public String getColumnType() {
 		return columnType;
 	}
+	
+	
+
+	@Override
+	public String toString() {
+		return "DataDescriptor [columnName=" + columnName + ", length=" + length + ", columnType=" + columnType + "]";
+	}
 
 	@Override
 	public int hashCode() {
@@ -54,7 +61,7 @@ public class ConfigKey implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ConfigKey other = (ConfigKey) obj;
+		DataDescriptor other = (DataDescriptor) obj;
 		if (columnName == null) {
 			if (other.columnName != null)
 				return false;

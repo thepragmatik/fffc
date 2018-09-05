@@ -11,17 +11,17 @@ import org.junit.runner.RunWith;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(JUnitPlatform.class)
-class TransformerTests {
+class ConverterMetadataTests {
 
 	@SuppressWarnings("deprecation")
 	@Test
 	void testExtractMetadataConfigKeyWithValidInputs() throws Exception {
 
-		DoFnTester<String, ConfigKey> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
+		DoFnTester<String, DataDescriptor> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
 
-		List<ConfigKey> result = extractMetadataConfigKeyFn.processBundle("Birth date,10,date");
+		List<DataDescriptor> result = extractMetadataConfigKeyFn.processBundle("Birth date,10,date");
 
-		ConfigKey expected = new ConfigKey("Birth date", 10, "date");
+		DataDescriptor expected = new DataDescriptor("Birth date", 10, "date");
 
 		Assert.assertTrue(result.size() > 0);
 
@@ -32,7 +32,7 @@ class TransformerTests {
 	@Test
 	void testExtractMetadataConfigKeyWithEmptyInput() throws Exception {
 
-		DoFnTester<String, ConfigKey> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
+		DoFnTester<String, DataDescriptor> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
 
 		assertThrows(IllegalArgumentException.class, () -> {
 			extractMetadataConfigKeyFn.processBundle("");
@@ -44,7 +44,7 @@ class TransformerTests {
 	@Test
 	void testExtractMetadataConfigKeyWithInValidInputs() throws Exception {
 
-		DoFnTester<String, ConfigKey> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
+		DoFnTester<String, DataDescriptor> extractMetadataConfigKeyFn = DoFnTester.of(new ExtractMetadataFn());
 
 		assertThrows(IllegalArgumentException.class, () -> {
 			extractMetadataConfigKeyFn.processBundle("Birth date,ten,date");

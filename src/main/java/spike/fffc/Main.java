@@ -9,17 +9,17 @@ import org.apache.beam.sdk.coders.StringUtf8Coder;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
 
+import spike.fffc.transforms.DataDescriptor;
+import spike.fffc.transforms.ExtractMetadataFn;
 import spike.fffc.transforms.TransformLineFn;
 
-/**
- * 
- */
 public class Main {
 
 	public static void main(String[] args) throws IOException {
@@ -33,8 +33,11 @@ public class Main {
 
 		String metadataPath = Paths.get("./src/test/resources/metadata.csv").toUri().toString();
 
-		PCollectionView<List<String>> metadata = pipeline.apply("LoadMetadata", TextIO.read().from(metadataPath))
-				.apply(View.<String>asList());
+		PCollectionView<List<DataDescriptor>> metadata = pipeline
+				.apply("LoadMetadata", TextIO.read().from(metadataPath))
+				.apply(Window.<String>into(new GlobalWindows()))
+				.apply(ParDo.of(new ExtractMetadataFn()))
+				.apply(View.asList());
 
 		PCollection<String> lines = pipeline.apply("FixedFormatFileReader", TextIO.read().from(filePath))
 				.setCoder(StringUtf8Coder.of());
