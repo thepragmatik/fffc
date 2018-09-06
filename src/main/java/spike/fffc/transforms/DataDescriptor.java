@@ -38,38 +38,4 @@ public class DataDescriptor implements Serializable {
 		return "DataDescriptor [columnName=" + columnName + ", length=" + length + ", columnType=" + columnType + "]";
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((columnName == null) ? 0 : columnName.hashCode());
-		result = prime * result + ((columnType == null) ? 0 : columnType.hashCode());
-		result = prime * result + length;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DataDescriptor other = (DataDescriptor) obj;
-		if (columnName == null) {
-			if (other.columnName != null)
-				return false;
-		} else if (!columnName.equals(other.columnName))
-			return false;
-		if (columnType == null) {
-			if (other.columnType != null)
-				return false;
-		} else if (!columnType.equals(other.columnType))
-			return false;
-		if (length != other.length)
-			return false;
-		return true;
-	}
-
 }
