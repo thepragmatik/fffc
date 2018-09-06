@@ -42,7 +42,9 @@ public class Main {
 		PCollection<String> lines = pipeline.apply("FixedFormatFileReader", TextIO.read().from(filePath))
 				.setCoder(StringUtf8Coder.of());
 
-		lines.apply(ParDo.of(new TransformLineFn(configuration)));
+		lines.apply(ParDo.of(new TransformLineFn(configuration)))
+				.apply(TextIO.write().withHeader("Birth date,First name,Last name,Weight").to("target/output")
+						.withoutSharding().withSuffix(".csv"));
 
 		pipeline.run().waitUntilFinish();
 	}
@@ -51,7 +53,7 @@ public class Main {
 
 final class ConfigurationBuilder {
 
-	protected static List<DataDescriptor> from(String resourcePath) throws IOException {
+	static List<DataDescriptor> from(String resourcePath) throws IOException {
 
 		List<String> allLines = Lists.newArrayList();
 
