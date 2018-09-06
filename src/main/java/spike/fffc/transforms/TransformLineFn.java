@@ -14,7 +14,7 @@ public class TransformLineFn extends DoFn<String, String> {
 
 	private static final long serialVersionUID = 7121367164345947278L;
 
-	private static final Logger LOGGER = Logger.getLogger(TransformLineFn.class.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger(TransformLineFn.class);
 
 	private List<DataDescriptor> configuration;
 
