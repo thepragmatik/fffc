@@ -15,15 +15,10 @@ import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.View;
-import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
-import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollectionView;
 import org.apache.beam.vendor.guava.v20.com.google.common.collect.Lists;
 
 import spike.fffc.transforms.DataDescriptor;
-import spike.fffc.transforms.ExtractMetadataFn;
 import spike.fffc.transforms.TransformLineFn;
 
 public class Main {
@@ -39,12 +34,7 @@ public class Main {
 
 		String metadataPath = Paths.get("./src/test/resources/metadata.csv").toUri().toString();
 
-		PCollection<String> metadataContent = pipeline.apply("LoadMetadata", TextIO.read().from(metadataPath));
-
-		PCollectionView<List<DataDescriptor>> metadata = metadataContent.apply(Window.<String>into(new GlobalWindows()))
-				.apply(ParDo.of(new ExtractMetadataFn())).apply(View.asList());
-
-		// Build Configuration here!  
+		// Build Configuration here
 		List<String> allLines = Lists.newArrayList();
 
 		Reader reader = Channels.newReader(FileSystems.open(FileSystems.matchSingleFileSpec(metadataPath).resourceId()),
@@ -59,7 +49,7 @@ public class Main {
 		PCollection<String> lines = pipeline.apply("FixedFormatFileReader", TextIO.read().from(filePath))
 				.setCoder(StringUtf8Coder.of());
 
-		lines.apply(ParDo.of(new TransformLineFn(configuration)).withSideInputs(metadata));
+		lines.apply(ParDo.of(new TransformLineFn(configuration)));
 
 		// start the processing pipeline
 		pipeline.run().waitUntilFinish();
