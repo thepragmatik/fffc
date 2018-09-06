@@ -15,7 +15,6 @@ import org.apache.beam.sdk.coders.StringUtf8Coder;
 import org.apache.beam.sdk.io.FileSystems;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.fs.ResourceId;
-import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
@@ -27,23 +26,23 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-		PipelineOptions options = PipelineOptionsFactory.create();
+		PipelineOptionsFactory.register(FFFCPipelineOptions.class);
+		FFFCPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(FFFCPipelineOptions.class);
 
 		Pipeline pipeline = Pipeline.create(options);
 
-		// TODO: Pass as argument from command line
-		String filePath = Paths.get("./src/test/resources/test-data-fffc.txt").toUri().toString();
-
-		String metadataPath = Paths.get("./src/test/resources/metadata.csv").toUri().toString();
+		String metadataPath = Paths.get(options.getMetadataPath()).toUri().toString();
 
 		List<DataDescriptor> configuration = ConfigurationBuilder.from(metadataPath);
+
+		String filePath = Paths.get(options.getSourcePath()).toUri().toString();
 
 		PCollection<String> lines = pipeline.apply("FixedFormatFileReader", TextIO.read().from(filePath))
 				.setCoder(StringUtf8Coder.of());
 
-		lines.apply(ParDo.of(new TransformLineFn(configuration)))
-				.apply(TextIO.write().withHeader("Birth date,First name,Last name,Weight").to("target/output")
-						.withoutSharding().withSuffix(".csv"));
+		lines.apply(ParDo.of(new TransformLineFn(configuration))).apply(TextIO.write()
+				.withHeader("Birth date,First name,Last name,Weight").to(options.getOutputPath()).withoutSharding());
 
 		pipeline.run().waitUntilFinish();
 	}
