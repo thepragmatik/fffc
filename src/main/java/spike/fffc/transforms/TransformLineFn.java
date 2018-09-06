@@ -66,7 +66,7 @@ public class TransformLineFn extends DoFn<String, String> {
 			}
 		}
 
-		System.out.println(sb.toString());
+		LOGGER.debug(sb.toString());
 
 		ctx.output(sb.toString());
 	}
