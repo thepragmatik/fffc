@@ -27,15 +27,20 @@ public class TransformLineFn extends DoFn<String, String> {
 
 		Iterator<DataDescriptor> itr = configuration.iterator();
 
-		DataDescriptor cfg = null;
-
 		while (itr.hasNext()) {
-			cfg = itr.next();
+			DataDescriptor cfg = itr.next();
 
 			LOGGER.debug(String.format("Applying configuration %s to input %s, [offset = %d]", cfg.toString(), input,
 					offset));
 
-			sb.append(input.subSequence(offset, (offset + cfg.getLength())).toString().trim());
+			String value = input.subSequence(offset, (offset + cfg.getLength())).toString().trim();
+			
+			if (cfg.getColumnType().equals("string")) {
+				if (value.contains(",")) {
+					value = "\"" + value + "\"";
+				}
+			}
+			sb.append(value);
 
 			offset = offset + cfg.getLength(); // reset offset for next iteration!
 
