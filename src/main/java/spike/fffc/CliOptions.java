@@ -3,7 +3,7 @@ package spike.fffc;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 
-public interface FFFCPipelineOptions extends org.apache.beam.sdk.options.PipelineOptions {
+public interface CliOptions extends org.apache.beam.sdk.options.PipelineOptions {
 
 	/**
 	 * Get the path to the source data file specified via command line option

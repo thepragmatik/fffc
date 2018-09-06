@@ -26,9 +26,9 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-		PipelineOptionsFactory.register(FFFCPipelineOptions.class);
-		FFFCPipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
-				.as(FFFCPipelineOptions.class);
+		PipelineOptionsFactory.register(CliOptions.class);
+		CliOptions options = PipelineOptionsFactory.fromArgs(args).withValidation()
+				.as(CliOptions.class);
 
 		Pipeline pipeline = Pipeline.create(options);
 
