@@ -69,12 +69,7 @@ final class ConfigurationBuilder {
 
 		List<DataDescriptor> descriptors = Lists.newArrayList();
 
-		config.forEach((line) -> {
-
-			// FIXME: Remove hard coding!
-			descriptors.add(new DataDescriptor(line));
-
-		});
+		config.forEach((line) -> descriptors.add(new DataDescriptor(line)));
 
 		return descriptors;
 	}

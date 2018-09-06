@@ -15,6 +15,7 @@ public class DataDescriptor implements Serializable {
 	public DataDescriptor(String source) {
 		super();
 		String[] fragments = source.split(",");
+		// TODO: Review and remove hard coded indices
 		this.columnName = fragments[0];
 		this.length = Integer.parseInt(fragments[1]);
 		this.columnType = fragments[2];
