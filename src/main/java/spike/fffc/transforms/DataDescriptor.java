@@ -1,7 +1,6 @@
 package spike.fffc.transforms;
 
 import java.io.Serializable;
-import java.util.Set;
 
 public class DataDescriptor implements Serializable {
 
@@ -20,10 +19,6 @@ public class DataDescriptor implements Serializable {
 		this.columnType = columnType;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getColumnName() {
 		return columnName;
 	}
@@ -35,8 +30,6 @@ public class DataDescriptor implements Serializable {
 	public String getColumnType() {
 		return columnType;
 	}
-	
-	
 
 	@Override
 	public String toString() {
