@@ -4,10 +4,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.log4j.Logger;
 
 public class TransformLineFn extends DoFn<String, String> {
 
 	private static final long serialVersionUID = 7121367164345947278L;
+
+	private static final Logger LOGGER = Logger.getLogger(TransformLineFn.class.getSimpleName());
 
 	private List<DataDescriptor> configuration;
 
@@ -18,8 +21,6 @@ public class TransformLineFn extends DoFn<String, String> {
 
 	@ProcessElement
 	public void processLine(@Element String input, ProcessContext ctx) {
-//		System.out.println(input);
-
 		int offset = 0;
 
 		StringBuilder sb = new StringBuilder();
@@ -31,8 +32,8 @@ public class TransformLineFn extends DoFn<String, String> {
 		while (itr.hasNext()) {
 			cfg = itr.next();
 
-			System.out.println(String.format("Applying configuration %s to input %s, [offset = %d]", cfg.toString(),
-					input, offset));
+			LOGGER.debug(String.format("Applying configuration %s to input %s, [offset = %d]", cfg.toString(), input,
+					offset));
 
 			sb.append(input.subSequence(offset, (offset + cfg.getLength())).toString().trim());
 

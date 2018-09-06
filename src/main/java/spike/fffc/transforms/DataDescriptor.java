@@ -12,11 +12,12 @@ public class DataDescriptor implements Serializable {
 
 	private String columnType;
 
-	public DataDescriptor(String columnName, int length, String columnType) {
+	public DataDescriptor(String source) {
 		super();
-		this.columnName = columnName;
-		this.length = length;
-		this.columnType = columnType;
+		String[] fragments = source.split(",");
+		this.columnName = fragments[0];
+		this.length = Integer.parseInt(fragments[1]);
+		this.columnType = fragments[2];
 	}
 
 	public String getColumnName() {

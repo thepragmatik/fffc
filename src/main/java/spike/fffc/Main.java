@@ -71,10 +71,8 @@ final class ConfigurationBuilder {
 
 		config.forEach((line) -> {
 
-			String[] fragments = line.split(",");
-
 			// FIXME: Remove hard coding!
-			descriptors.add(new DataDescriptor(fragments[0], Integer.parseInt(fragments[1]), fragments[2]));
+			descriptors.add(new DataDescriptor(line));
 
 		});
 
