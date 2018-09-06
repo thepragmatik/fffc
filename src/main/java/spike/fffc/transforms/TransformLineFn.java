@@ -1,5 +1,9 @@
 package spike.fffc.transforms;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class TransformLineFn extends DoFn<String, String> {
 	}
 
 	@ProcessElement
-	public void processLine(@Element String input, ProcessContext ctx) {
+	public void processLine(@Element String input, ProcessContext ctx) throws ParseException {
 		int offset = 0;
 
 		StringBuilder sb = new StringBuilder();
@@ -34,12 +38,25 @@ public class TransformLineFn extends DoFn<String, String> {
 					offset));
 
 			String value = input.subSequence(offset, (offset + cfg.getLength())).toString().trim();
-			
-			if (cfg.getColumnType().equals("string")) {
+
+			switch (cfg.getColumnType()) {
+			case "string":
 				if (value.contains(",")) {
 					value = "\"" + value + "\"";
 				}
+				break;
+			case "date":
+				final DateFormat fromFormat = new SimpleDateFormat("yyyy-mm-dd");
+				final DateFormat toFormat = new SimpleDateFormat("dd/mm/yyyy");
+
+				Date parsedDate = fromFormat.parse(value);
+				value = toFormat.format(parsedDate);
+
+				break;
+			default:
+				break;
 			}
+
 			sb.append(value);
 
 			offset = offset + cfg.getLength(); // reset offset for next iteration!
