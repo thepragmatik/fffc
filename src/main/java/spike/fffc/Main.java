@@ -19,7 +19,6 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.vendor.guava.v20.com.google.common.collect.Lists;
 
 import spike.fffc.transforms.DataDescriptor;
 import spike.fffc.transforms.TransformLineFn;
@@ -55,15 +54,13 @@ final class ConfigurationBuilder {
 
 	static List<DataDescriptor> from(String resourcePath) throws IOException {
 
-		List<String> allLines = Lists.newArrayList();
-
 		ResourceId metadataResource = FileSystems.matchSingleFileSpec(resourcePath).resourceId();
 
 		ReadableByteChannel readableByteChannel = FileSystems.open(metadataResource);
 
 		Reader reader = Channels.newReader(readableByteChannel, StandardCharsets.UTF_8.name());
 
-		allLines.addAll(CharStreams.readLines(reader));
+		List<String> allLines = CharStreams.readLines(reader);
 
 		return allLines.stream().map(DataDescriptor::new).collect(Collectors.toList());
 	}
