@@ -7,6 +7,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.beam.repackaged.beam_sdks_java_core.com.google.common.io.CharStreams;
 import org.apache.beam.sdk.Pipeline;
@@ -62,16 +63,7 @@ final class ConfigurationBuilder {
 
 		allLines.addAll(CharStreams.readLines(reader));
 
-		return buildConfiguration(allLines);
-	}
-
-	private static List<DataDescriptor> buildConfiguration(List<String> config) {
-
-		List<DataDescriptor> descriptors = Lists.newArrayList();
-
-		config.forEach((line) -> descriptors.add(new DataDescriptor(line)));
-
-		return descriptors;
+		return allLines.stream().map(DataDescriptor::new).collect(Collectors.toList());
 	}
 
 }
