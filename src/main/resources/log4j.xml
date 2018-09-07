@@ -29,7 +29,7 @@
   </appender>
 
   <logger name="spikes.fffc">
-    <level value="debug"/>
+    <level value="info"/>
   </logger>
 
   <logger name="org.apache.beam">

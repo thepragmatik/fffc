@@ -12,6 +12,10 @@ import org.apache.log4j.Logger;
 
 public class TransformLineFn extends DoFn<String, String> {
 
+	private static final String TYPE_DATE = "date";
+
+	private static final String TYPE_STRING = "string";
+
 	private static final long serialVersionUID = 7121367164345947278L;
 
 	private static final Logger LOGGER = Logger.getLogger(TransformLineFn.class);
@@ -24,7 +28,8 @@ public class TransformLineFn extends DoFn<String, String> {
 	}
 
 	@ProcessElement
-	public void processLine(@Element String input, ProcessContext ctx) throws ParseException {
+	public void processLine(@Element String input, ProcessContext ctx) {
+
 		int offset = 0;
 
 		StringBuilder sb = new StringBuilder();
@@ -40,16 +45,23 @@ public class TransformLineFn extends DoFn<String, String> {
 			String value = input.subSequence(offset, (offset + cfg.getLength())).toString().trim();
 
 			switch (cfg.getColumnType()) {
-			case "string":
+			case TYPE_STRING:
 				if (value.contains(",")) {
 					value = "\"" + value + "\"";
 				}
 				break;
-			case "date":
+			case TYPE_DATE:
 				final DateFormat fromFormat = new SimpleDateFormat("yyyy-mm-dd");
+				fromFormat.setLenient(false);
 				final DateFormat toFormat = new SimpleDateFormat("dd/mm/yyyy");
 
-				Date parsedDate = fromFormat.parse(value);
+				Date parsedDate;
+				try {
+					parsedDate = fromFormat.parse(value);
+				} catch (ParseException e) {
+					throw new InvalidDateException("Invalid date format (expected: yyyy-dd-mm). Could not be parsed.",
+							e);
+				}
 				value = toFormat.format(parsedDate);
 
 				break;
