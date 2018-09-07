@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.log4j.Logger;
 
-public class TransformLineFn extends DoFn<String, String> {
+public class TransformInputFn extends DoFn<String, String> {
 
 	private static final String TYPE_DATE = "date";
 
@@ -18,23 +18,25 @@ public class TransformLineFn extends DoFn<String, String> {
 
 	private static final long serialVersionUID = 7121367164345947278L;
 
-	private static final Logger LOGGER = Logger.getLogger(TransformLineFn.class);
+	private static final Logger LOGGER = Logger.getLogger(TransformInputFn.class);
 
-	private List<DataDescriptor> configuration;
+	private List<DataDescriptor> metadata;
 
-	public TransformLineFn(List<DataDescriptor> configuration) {
+	public TransformInputFn(List<DataDescriptor> metadata) {
 		super();
-		this.configuration = configuration;
+		this.metadata = metadata;
 	}
 
 	@ProcessElement
 	public void processLine(@Element String input, ProcessContext ctx) {
 
+		validate(input);
+
 		int offset = 0;
 
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<DataDescriptor> itr = configuration.iterator();
+		Iterator<DataDescriptor> itr = metadata.iterator();
 
 		while (itr.hasNext()) {
 			DataDescriptor cfg = itr.next();
@@ -81,6 +83,16 @@ public class TransformLineFn extends DoFn<String, String> {
 		LOGGER.debug(sb.toString());
 
 		ctx.output(sb.toString());
+	}
+
+	private void validate(String input) throws TruncatedDataException {
+		int expectedDataLength = metadata.stream().mapToInt(DataDescriptor::getLength).sum();
+
+		if (input.length() != expectedDataLength) {
+			throw new TruncatedDataException(String.format("Invalid data encoutered (expected length = %d, found = %df",
+					expectedDataLength, input.length()));
+		}
+
 	}
 
 }

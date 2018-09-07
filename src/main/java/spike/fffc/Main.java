@@ -20,7 +20,7 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.PCollection;
 
 import spike.fffc.transforms.DataDescriptor;
-import spike.fffc.transforms.TransformLineFn;
+import spike.fffc.transforms.TransformInputFn;
 
 public class Main {
 
@@ -41,7 +41,7 @@ public class Main {
 		PCollection<String> lines = pipeline.apply("FixedFormatFileReader", TextIO.read().from(filePath))
 				.setCoder(StringUtf8Coder.of());
 
-		lines.apply(ParDo.of(new TransformLineFn(configuration))).apply(TextIO.write()
+		lines.apply(ParDo.of(new TransformInputFn(configuration))).apply(TextIO.write()
 				.withHeader("Birth date,First name,Last name,Weight").to(options.getOutputPath()).withoutSharding());
 
 		pipeline.run().waitUntilFinish();
